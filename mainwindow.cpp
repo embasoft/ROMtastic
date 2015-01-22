@@ -13,6 +13,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_2->setValidator(regExpValidator);
     statusLabel = new QLabel("Ready - No rom loaded...");
     ui->statusBar->addWidget(statusLabel);
+
+    QDir home(QDir::homePath() + "/romhacking");
+    home.setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
+    QList<QTreeWidgetItem *> files;
+
+    QStringList filters;
+    filters << "*.asm";
+    home.setNameFilters(filters);
+
+    foreach(QString file, home.entryList())
+    {
+        files.append(new QTreeWidgetItem(QStringList(file), 0));
+    }
+    ui->treeWidget->addTopLevelItems(files);
 }
 
 MainWindow::~MainWindow()
@@ -34,6 +48,14 @@ void MainWindow::on_pushButton_2_clicked()
             QString inputText = ui->lineEdit_2->text();
             inputText = inputText.replace(QChar(' '), "");
             length = inputText.length();
+            if (length % 2)
+            {
+                length = (length / 2) + 1;
+            }
+            else
+            {
+                length /= 2;
+            }
         }
 
         ui->listWidget->clear();
@@ -107,5 +129,5 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_actionSave_Rom_triggered()
 {
     romChanges->writeChanges();
-    rom->write()
+    rom->write(QFileDialog::getSaveFileName(this, "Select a Rom", QDir::homePath(), "GameBoy Advance ROM (*.gba)"));
 }
