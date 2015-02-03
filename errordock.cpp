@@ -2,11 +2,11 @@
 #include <QGraphicsDropShadowEffect>
 #include <QTimer>
 
-ErrorDock::ErrorDock(QTableWidget *tableWidget, QObject *parent)
+ErrorDock::ErrorDock(QTreeWidget *treeWidget, QObject *parent)
 {
     setErrorHandler(new ErrorHandler(this));
-    setTableWidget(tableWidget);
-    tableWidget->sortItems(0, Qt::DescendingOrder);
+    setTreeWidget(treeWidget);
+    treeWidget->sortItems(0, Qt::DescendingOrder);
 }
 
 ErrorDock::~ErrorDock()
@@ -40,58 +40,73 @@ void ErrorDock::setErrorHandler(ErrorHandler *errorHandler)
 
 void ErrorDock::updateView()
 {
-    if (errorHandler() && tableWidget())
+    if (errorHandler() && treeWidget())
     {
-        tableWidget()->clear();
+        treeWidget()->clear();
 
-        // MUTABLE ITERATOR
         foreach (ErrorHandler::Error error, errorHandler()->errors())
         {
-            int row = tableWidget()->rowCount();
-            tableWidget()->setRowCount(row + 1);
+            ErrorItem *item = new ErrorItem(treeWidget());
 
-            QList<QTableWidgetItem *> item;
-            item.append(new ErrorItem(QString::number(error.id)));
-            item.append(new QTableWidgetItem(error.type));
-            item.append(new QTableWidgetItem(error.description));
+            QStringList values;
+            values.append(QString::number(error.id));
+            values.append(error.type);
+            values.append(error.description);
 
-            for (int i = 0; i < item.size(); i++)
+            for (int i = 0; i < values.size(); i++)
             {
-                tableWidget()->setItem(row, i, item[i]);
-
-                QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
-                effect->setOffset(.0);
-                effect->setBlurRadius(20.0);
-                effect->setColor(Qt::red);
-
-                tableWidget()->setGraphicsEffect(effect);
-                QTimer::singleShot(1000, this, SLOT(removeGlow()));
+                item->setText(i, values[i]);
             }
+
+            treeWidget()->addTopLevelItem(item);
+
+            if (error.type.toLower() == "error")
+                glow(Qt::red, 1000);
+            else if (error.type.toLower() == "warning")
+                glow(Qt::yellow, 1000);
+            else if (error.type.toLower() == "hint")
+                glow(Qt::cyan, 1000);
+            else if (error.type.toLower() == "test")
+                glow(Qt::blue, 1000);
+            else
+                glow(Qt::red, 1000);
         }
     }
 }
-QTableWidget *ErrorDock::tableWidget() const
+QTreeWidget *ErrorDock::treeWidget() const
 {
-    return _tableWidget;
+    return _treeWidget;
 }
 
-void ErrorDock::setTableWidget(QTableWidget *tableWidget)
+void ErrorDock::glow(Qt::GlobalColor color, int msec)
 {
-    _tableWidget = tableWidget;
+    QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect();
+    effect->setOffset(.0);
+    effect->setBlurRadius(20.0);
+    effect->setColor(color);
+
+    treeWidget()->setGraphicsEffect(effect);
+    QTimer::singleShot(msec, this, SLOT(removeGlow()));
+}
+
+void ErrorDock::setTreeWidget(QTreeWidget *treeWidget)
+{
+    _treeWidget = treeWidget;
 }
 
 void ErrorDock::removeGlow()
 {
-    tableWidget()->setGraphicsEffect(NULL);
+    treeWidget()->setGraphicsEffect(NULL);
 }
 
-ErrorItem::ErrorItem(QString text) : QTableWidgetItem(text)
+ErrorItem::ErrorItem(QTreeWidget *parent) : QTreeWidgetItem(parent)
 {
 
 }
 
-bool ErrorItem::operator <(const QTableWidgetItem &other) const
+bool ErrorItem::operator <(const QTreeWidgetItem &other) const
 {
-    return text().toInt() < other.text().toInt();
+    int column = treeWidget()->sortColumn();
+    return text(column).toInt() < other.text(column).toInt();
 }
 

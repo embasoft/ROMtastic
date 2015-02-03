@@ -6,294 +6,221 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>887</width>
+    <width>800</width>
     <height>649</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>ROMtastic 0.1</string>
   </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
     <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="enabled">
-       <bool>true</bool>
+     <widget class="QGroupBox" name="boxRom">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>2</verstretch>
+       </sizepolicy>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>450</height>
-       </size>
+      <property name="title">
+       <string>Rom</string>
       </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Filetastic</string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QTreeWidget" name="treeSourceFiles">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="columnCount">
-           <number>2</number>
-          </property>
-          <attribute name="headerDefaultSectionSize">
-           <number>150</number>
-          </attribute>
-          <column>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="sizeConstraint">
+        <enum>QLayout::SetDefaultConstraint</enum>
+       </property>
+       <property name="leftMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="FileManager" name="treeSourceFiles">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="columnCount">
+            <number>2</number>
+           </property>
+           <attribute name="headerDefaultSectionSize">
+            <number>150</number>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Size</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_6">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QTextEdit" name="editSource"/>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="boxOperations">
+           <property name="title">
+            <string>Operations</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QPushButton" name="btnSaveFile">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Save File</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnRefreshOffsets">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Refresh Offsets</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnInsertCode">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Insert Code</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="sizeConstraint">
+          <enum>QLayout::SetFixedSize</enum>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="lblFreeOffsets">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>120</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
-            <string>Name</string>
+            <string>Free Offsets</string>
            </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Size</string>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listOffsets">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-          </column>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="boxRom">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Rom</string>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <property name="sizeConstraint">
-            <enum>QLayout::SetDefaultConstraint</enum>
+           <property name="minimumSize">
+            <size>
+             <width>120</width>
+             <height>0</height>
+            </size>
            </property>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_3">
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QPushButton" name="pushButton">
-               <property name="text">
-                <string>PushButton</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btnRefreshOffsets">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Refresh offsets</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btnInsertCode">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Insert code</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <property name="spacing">
-              <number>6</number>
-             </property>
-             <property name="sizeConstraint">
-              <enum>QLayout::SetFixedSize</enum>
-             </property>
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="lblFreeOffsets">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>120</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="text">
-                <string>Free Offsets</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QListWidget" name="listOffsets">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>120</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>120</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="alternatingRowColors">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Free space search</string>
-       </attribute>
-       <widget class="QSpinBox" name="sboxFreeBytes">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>30</y>
-          <width>61</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="minimum">
-         <number>2</number>
-        </property>
-        <property name="maximum">
-         <number>99999</number>
-        </property>
-        <property name="value">
-         <number>2</number>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btnSearchFreeSpace">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>110</y>
-          <width>141</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Search free space</string>
-        </property>
-       </widget>
-       <widget class="QListWidget" name="listOffsetsSearch">
-        <property name="geometry">
-         <rect>
-          <x>280</x>
-          <y>10</y>
-          <width>171</width>
-          <height>275</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="rbtnFreeBytes">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>161</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Free bytes &amp;minimum</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="rbtn_LengthText">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>58</y>
-          <width>121</width>
-          <height>18</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Length of &amp;text</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="editInsertText">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>80</y>
-          <width>241</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="inputMask">
-         <string/>
-        </property>
-        <property name="maxLength">
-         <number>32767</number>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btnInsertString">
-        <property name="geometry">
-         <rect>
-          <x>171</x>
-          <y>110</y>
-          <width>101</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Insert string</string>
-        </property>
-       </widget>
-      </widget>
+           <property name="maximumSize">
+            <size>
+             <width>120</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -303,7 +230,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>887</width>
+     <width>800</width>
      <height>27</height>
     </rect>
    </property>
@@ -313,23 +240,39 @@
     </property>
     <addaction name="actionLoad_Rom"/>
     <addaction name="actionSave_Rom"/>
-    <addaction name="actionSelect_Directory"/>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>Op&amp;tions</string>
+    </property>
+    <addaction name="actionSelect_Directory"/>
+    <addaction name="actionSet_compiler_path"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuOptions"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockError">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
    <property name="minimumSize">
     <size>
-     <width>150</width>
-     <height>120</height>
+     <width>96</width>
+     <height>150</height>
+    </size>
+   </property>
+   <property name="baseSize">
+    <size>
+     <width>0</width>
+     <height>150</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -341,30 +284,18 @@
    <widget class="QWidget" name="dockWidgetContents_3">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QTableWidget" name="tblErrors">
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="alternatingRowColors">
-        <bool>true</bool>
-       </property>
+      <widget class="QTreeWidget" name="trErrors">
        <property name="sortingEnabled">
         <bool>true</bool>
        </property>
        <property name="columnCount">
         <number>3</number>
        </property>
-       <attribute name="horizontalHeaderCascadingSectionResizes">
-        <bool>false</bool>
+       <attribute name="headerDefaultSectionSize">
+        <number>100</number>
        </attribute>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>120</number>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
+       <attribute name="headerStretchLastSection">
         <bool>true</bool>
-       </attribute>
-       <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-        <bool>false</bool>
        </attribute>
        <column>
         <property name="text">
@@ -416,33 +347,20 @@
     <string>Select &amp;Directory...</string>
    </property>
   </action>
+  <action name="actionSet_compiler_path">
+   <property name="text">
+    <string>Set Compiler Path...</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <tabstops>
-  <tabstop>sboxFreeBytes</tabstop>
-  <tabstop>editInsertText</tabstop>
-  <tabstop>btnSearchFreeSpace</tabstop>
-  <tabstop>listOffsetsSearch</tabstop>
-  <tabstop>rbtnFreeBytes</tabstop>
-  <tabstop>rbtn_LengthText</tabstop>
- </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>FileManager</class>
+   <extends>QTreeWidget</extends>
+   <header>filemanager.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>editInsertText</sender>
-   <signal>returnPressed()</signal>
-   <receiver>btnSearchFreeSpace</receiver>
-   <slot>click()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>158</x>
-     <y>149</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>98</x>
-     <y>182</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

@@ -3,7 +3,7 @@
 
 #include "becreative.h"
 #include "becreative_global.h"
-#include <QTableWidget>
+#include <QTreeWidget>
 
 using namespace beCreative::Utils;
 
@@ -11,7 +11,7 @@ class ErrorDock : public QObject
 {
     Q_OBJECT
 public:
-    explicit ErrorDock(QTableWidget *tableWidget, QObject *parent = 0);
+    explicit ErrorDock(QTreeWidget *treeWidget, QObject *parent = 0);
     ~ErrorDock();
 
     int addError(QString type, QString description);
@@ -22,12 +22,14 @@ public:
 
     void updateView();
 
-    QTableWidget *tableWidget() const;
-    void setTableWidget(QTableWidget *tableWidget);
+    QTreeWidget *treeWidget() const;
+    void setTreeWidget(QTreeWidget *treeWidget);
+
+    void glow(Qt::GlobalColor color, int msec);
 
 private:
     ErrorHandler *_errorHandler;
-    QTableWidget *_tableWidget;
+    QTreeWidget *_treeWidget;
 
 signals:
 
@@ -35,11 +37,11 @@ public slots:
     void removeGlow();
 };
 
-class ErrorItem : public QTableWidgetItem
+class ErrorItem : public QTreeWidgetItem
 {
     public:
-    ErrorItem(QString text);
-    bool operator <(const QTableWidgetItem &other) const;
+    ErrorItem(QTreeWidget *parent);
+    bool operator <(const QTreeWidgetItem &other) const;
 };
 
 #endif // ERRORDOCK_H

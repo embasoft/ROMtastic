@@ -9,19 +9,19 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QRegExpValidator *regExpValidator = new QRegExpValidator(QRegExp("[0-9A-F ]*", Qt::CaseInsensitive, QRegExp::RegExp), this);
-    ui->editInsertText->setValidator(regExpValidator);
     statusLabel = new QLabel("Ready - No rom loaded...");
     ui->statusBar->addWidget(statusLabel);
 
-    compiler = new Compiler("/home/florian/devkitPRO/devkitARM/bin", this);
-    errorDock = new ErrorDock(ui->tblErrors);
+    errorDock = new ErrorDock(ui->trErrors);
 
-    if (!initializeSourceBrowser())
+    if (!setupSourceBrowser())
     {
-        exit(1);
+        errorDock->addError("error", "Setup of file manager failed");
     }
-
+    if (!setupEditor())
+    {
+        errorDock->addError("error", "Setup of editor failed");
+    }
 }
 
 MainWindow::~MainWindow()
@@ -36,6 +36,8 @@ QString MainWindow::compilerPath() const
 void MainWindow::setCompilerPath(const QString &compilerPath)
 {
     _compilerPath = compilerPath;
+    ui->treeSourceFiles->setCompiler(new Compiler(compilerPath, this));
+    ui->treeSourceFiles->searchFiles();
 }
 
 QDir MainWindow::directory() const
@@ -46,58 +48,21 @@ QDir MainWindow::directory() const
 void MainWindow::setDirectory(const QDir &directory)
 {
     _directory = directory;
+    ui->treeSourceFiles->setDirectory(directory);
 }
 
-
-
-int MainWindow::compileFile(QString path)
+bool MainWindow::setupEditor()
 {
-    compiler->setDirectory(path.left(path.lastIndexOf("/")));
+    highlighter = new Highlighter(ui->editSource->document());
 
-    QString file;
-    file = path.mid(path.lastIndexOf("/") + 1);
-
-    if (!compiler->compile(file))
-    {
-        qDebug() << "Failed to compile...";
-    }
+    return true;
 }
 
-bool MainWindow::initializeSourceBrowser()
+bool MainWindow::setupSourceBrowser()
 {
-    setDirectory(QDir::homePath() + "/romhacking");
-    directory().setFilter(QDir::AllEntries | QDir::NoDotAndDotDot);
-
-    QList<QTreeWidgetItem *> files;
-    QStringList filters;
-
-    filters << "*.asm";
-    directory().setNameFilters(filters);
-
-    foreach(QFileInfo file, directory().entryInfoList())
-    {
-        if (file.fileName().right(4) == ".asm")
-        {
-            compileFile(file.absoluteFilePath());
-            QFile oFile(file.absoluteFilePath() + ".bin");
-            QString size = "0";
-
-            if (oFile.open(QIODevice::ReadOnly))
-            {
-                size = QString::number(oFile.size());
-            }
-            else
-            {
-                size = "-1";
-            }
-
-            QStringList infos;
-            infos << file.fileName() << size + " Bytes";
-
-            files.append(new QTreeWidgetItem(infos));
-        }
-    }
-    ui->treeSourceFiles->addTopLevelItems(files);
+    ui->treeSourceFiles->setDirectory(QDir::homePath());
+    ui->treeSourceFiles->setErrorDock(errorDock);
+    ui->treeSourceFiles->setEditorWidget(ui->editSource);
 
     return true;
 }
@@ -136,48 +101,8 @@ bool MainWindow::insertOffsets(int minimum)
         QString item = "0x" + QString("%1").arg(result, 8, 16, QChar('0')).toUpper();
         ui->listOffsets->addItem(item);
     }
-}
 
-void MainWindow::on_btnSearchFreeSpace_clicked()
-{
-    if (_romLoaded)
-    {
-        int length = 0;
-        if (ui->rbtnFreeBytes->isChecked())
-        {
-            length = ui->sboxFreeBytes->value();
-        }
-        else
-        {
-            QString inputText = ui->editInsertText->text();
-            inputText = inputText.replace(QChar(' '), "");
-            length = inputText.length();
-            if (length % 2)
-            {
-                length = (length / 2) + 1;
-            }
-            else
-            {
-                length /= 2;
-            }
-        }
-
-        ui->listOffsetsSearch->clear();
-
-        QList<int> offsets;
-        offsets = rom->readFreeSpaceOffsets(length);
-        foreach(int offset, offsets)
-        {
-            QString item = "0x" + QString("%1").arg(offset, 8, 16, QChar('0')).toUpper();
-            ui->listOffsetsSearch->addItem(item);
-        }
-
-        statusLabel->setText("Finished - Ready for work");
-    }
-    else
-    {
-        statusLabel->setText("No rom loaded");
-    }
+    return true;
 }
 
 void MainWindow::on_actionLoad_Rom_triggered()
@@ -196,38 +121,9 @@ void MainWindow::on_actionLoad_Rom_triggered()
     statusLabel->setText("Ready - Rom loaded");
 }
 
-void MainWindow::on_editInsertText_textChanged(const QString &arg1)
-{
-    ui->editInsertText->setText(arg1.toUpper());
-}
-
 void MainWindow::on_actionQuit_triggered()
 {
     close();
-}
-
-void MainWindow::on_btnInsertString_clicked()
-{
-    if (ui->editInsertText->text().length() >= 2)
-    {
-        QString input = ui->editInsertText->text();
-        input = input.replace(QChar(' '), "");
-
-        QString item;
-        int offset;
-        if (ui->listOffsetsSearch->currentItem())
-        {
-            item = ui->listOffsetsSearch->currentItem()->text();
-            bool ok;
-            offset = item.replace("0x", "").toInt(&ok, 16);
-        }
-        QByteArray bytes;
-        bool ok;
-        for (int i = 0; i < input.length(); i += 2)
-            bytes.append(input.mid(i, 2).toInt(&ok, 16));
-
-        romChanges->addChange(bytes, offset);
-    }
 }
 
 void MainWindow::on_actionSave_Rom_triggered()
@@ -237,16 +133,31 @@ void MainWindow::on_actionSave_Rom_triggered()
         romChanges->writeChanges();
         rom->write(QFileDialog::getSaveFileName(this, "Select a Rom", QDir::homePath(), "GameBoy Advance ROM (*.gba)"));
     }
+    else
+    {
+        errorDock->addError("hint", "No rom loaded");
+    }
 }
 
 void MainWindow::on_btnRefreshOffsets_clicked()
 {
-    if (_romLoaded && ui->treeSourceFiles->selectedItems().size())
+    if (_romLoaded)
     {
-        QString minimumRaw = ui->treeSourceFiles->selectedItems()[0]->text(1);
-        int minimum = minimumRaw.left(minimumRaw.lastIndexOf(" ")).toInt();
+        if (ui->treeSourceFiles->selectedItems().size())
+        {
+            QString minimumRaw = ui->treeSourceFiles->selectedItems()[0]->text(1);
+            int minimum = minimumRaw.left(minimumRaw.lastIndexOf(" ")).toInt();
 
-        insertOffsets(minimum);
+            insertOffsets(minimum);
+        }
+        else
+        {
+            errorDock->addError("hint", "No file selected");
+        }
+    }
+    else
+    {
+        errorDock->addError("hint", "No rom loaded");
     }
 }
 
@@ -257,40 +168,79 @@ void MainWindow::on_actionSelect_Directory_triggered()
 
 void MainWindow::on_btnInsertCode_clicked()
 {
-    if (_romLoaded && ui->listOffsets->count())
+    if (_romLoaded)
     {
-        QString fileName = ui->treeSourceFiles->selectedItems()[0]->text(0);
-        QFile file(directory().absolutePath() + "/" + fileName + ".bin");
-        QByteArray input;
-
-        if (!file.open(QIODevice::ReadOnly))
+        if (ui->listOffsets->count())
         {
-            qDebug() << "Couldn't read compiled file";
-            return;
-        }
-        input = file.readAll();
+            QString fileName = ui->treeSourceFiles->selectedItems()[0]->text(0);
+            QFile file(directory().absolutePath() + "/" + fileName + ".bin");
+            QByteArray input;
 
-        bool conversionOk;
-        int offset = ui->listOffsets->itemAt(0, 0)->text().toInt(&conversionOk, 16);
+            if (!file.open(QIODevice::ReadOnly))
+            {
+                errorDock->addError("error", "Couldn't read compiled file");
+                return;
+            }
+            input = file.readAll();
 
-        if (!conversionOk)
-        {
-            qDebug() << QString::number(offset);
+            bool conversionOk;
+            int offset = ui->listOffsets->itemAt(0, 0)->text().toInt(&conversionOk, 16);
+
+            if (!conversionOk)
+            {
+                errorDock->addError("error", "Couldn't convert offset string to integer");
+            }
+            else
+            {
+                romChanges->addChange(input, offset);
+                romChanges->writeChanges();
+            }
+
+            QString minimumRaw = ui->treeSourceFiles->selectedItems()[0]->text(1);
+            int minimum = minimumRaw.left(minimumRaw.lastIndexOf(" ")).toInt();
+
+            insertOffsets(minimum);
         }
         else
         {
-            romChanges->addChange(input, offset);
-            romChanges->writeChanges();
+            errorDock->addError("error", "No free space available");
         }
-
-        QString minimumRaw = ui->treeSourceFiles->selectedItems()[0]->text(1);
-        int minimum = minimumRaw.left(minimumRaw.lastIndexOf(" ")).toInt();
-
-        insertOffsets(minimum);
+    }
+    else
+    {
+        errorDock->addError("hint", "No rom loaded");
     }
 }
 
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_btnSaveFile_clicked()
 {
-    errorDock->addError("Test", "LOOL");
+    if (ui->treeSourceFiles->fileLoaded())
+    {
+        if (!ui->treeSourceFiles->saveFile())
+        {
+            errorDock->addError("error", "Failed to save file: " + ui->treeSourceFiles->fileName());
+        }
+    }
+    else
+    {
+        errorDock->addError("hint", "No file loaded");
+    }
+}
+
+void MainWindow::on_treeSourceFiles_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    QString fileName = item->text(0);
+
+    if (!ui->treeSourceFiles->loadFile(fileName))
+    {
+        errorDock->addError("error", "Failed to load file: " + fileName);
+        return;
+    }
+
+    ui->boxRom->setTitle("Rom - " + fileName);
+}
+
+void MainWindow::on_actionSet_compiler_path_triggered()
+{
+    setCompilerPath(QFileDialog::getExistingDirectory(this, "Select the directory of the compiler", QDir::homePath()));
 }

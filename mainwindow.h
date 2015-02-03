@@ -3,6 +3,7 @@
 
 #include "becreative.h"
 #include "errordock.h"
+#include "highlighter.h"
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QLabel>
@@ -25,7 +26,6 @@ public:
     Rom *rom;
     ChangesHandler *romChanges;
     QLabel *statusLabel;
-    Compiler *compiler;
     ErrorDock *errorDock;
     ~MainWindow();
 
@@ -40,23 +40,21 @@ private:
     QString _romPath;
     QString _compilerPath;
     QDir _directory;
+
+    Highlighter *highlighter;
+
     int compileFile(QString path);
-    bool initializeSourceBrowser();
+    bool setupSourceBrowser();
+    bool setupEditor();
     bool insertOffsets(int minimum);
 
 public slots:
 
 private slots:
 
-    void on_btnSearchFreeSpace_clicked();
-
     void on_actionLoad_Rom_triggered();
 
-    void on_editInsertText_textChanged(const QString &arg1);
-
     void on_actionQuit_triggered();
-
-    void on_btnInsertString_clicked();
 
     void on_actionSave_Rom_triggered();
 
@@ -66,7 +64,11 @@ private slots:
 
     void on_btnInsertCode_clicked();
 
-    void on_pushButton_clicked();
+    void on_btnSaveFile_clicked();
+
+    void on_treeSourceFiles_itemDoubleClicked(QTreeWidgetItem *item, int column);
+
+    void on_actionSet_compiler_path_triggered();
 
 private:
     Ui::MainWindow *ui;

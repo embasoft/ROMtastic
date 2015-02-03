@@ -14,10 +14,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    errordock.cpp
+    errordock.cpp \
+    highlighter.cpp \
+    filemanager.cpp
 
 HEADERS  += mainwindow.h \
-    errordock.h
+    errordock.h \
+    highlighter.h \
+    filemanager.h
 
 FORMS    += mainwindow.ui
 
