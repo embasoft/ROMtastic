@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>ROMtastic 0.1</string>
+   <string>ROMtastic 0.2 BETA</string>
   </property>
   <property name="dockNestingEnabled">
    <bool>false</bool>
@@ -75,6 +75,9 @@
              <width>150</width>
              <height>0</height>
             </size>
+           </property>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
            </property>
            <property name="columnCount">
             <number>2</number>

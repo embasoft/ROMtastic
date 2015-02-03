@@ -106,11 +106,22 @@ void FileManager::setFileName(const QString &fileName)
     _fileName = fileName;
 }
 
+bool FileManager::compilerSet()
+{
+    return _compilerSet;
+}
+
 bool FileManager::searchFiles()
 {
     if (!_compilerSet)
     {
         errorDock()->addError("error", "Compiler isn't set");
+        return false;
+    }
+
+    if (directory().path() == "")
+    {
+        errorDock()->addError("error", "Directory isn't set");
         return false;
     }
 

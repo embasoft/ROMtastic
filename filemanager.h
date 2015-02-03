@@ -39,6 +39,8 @@ public:
     QString fileName() const;
     void setFileName(const QString &fileName);
 
+    bool compilerSet();
+
 private:
     bool _fileLoaded = false;
     bool _compilerSet = false;

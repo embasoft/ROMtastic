@@ -49,6 +49,9 @@ void MainWindow::setDirectory(const QDir &directory)
 {
     _directory = directory;
     ui->treeSourceFiles->setDirectory(directory);
+
+    if(ui->treeSourceFiles->compilerSet())
+        ui->treeSourceFiles->searchFiles();
 }
 
 bool MainWindow::setupEditor()
@@ -195,6 +198,8 @@ void MainWindow::on_btnInsertCode_clicked()
                 romChanges->addChange(input, offset);
                 romChanges->writeChanges();
             }
+
+            errorDock->addError("hint", "Code inserted at: " + ui->listOffsets->itemAt(0, 0)->text());
 
             QString minimumRaw = ui->treeSourceFiles->selectedItems()[0]->text(1);
             int minimum = minimumRaw.left(minimumRaw.lastIndexOf(" ")).toInt();
