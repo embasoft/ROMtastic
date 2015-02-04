@@ -22,6 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         errorDock->addError("error", "Setup of editor failed");
     }
+
+    QFont font = ui->editSource->font();
+    font.setStyleHint(QFont::Monospace);
+    ui->editSource->setFont(font);
 }
 
 MainWindow::~MainWindow()
