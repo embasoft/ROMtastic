@@ -63,7 +63,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="FileManager" name="treeSourceFiles">
+          <widget class="FileManager" name="fileManager">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -108,55 +108,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QTextEdit" name="editSource"/>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="boxOperations">
-           <property name="title">
-            <string>Operations</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
-             <widget class="QPushButton" name="btnSaveFile">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Save File</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnRefreshOffsets">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Refresh Offsets</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="btnInsertCode">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>Insert Code</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+          <widget class="Editor" name="editSource"/>
          </item>
         </layout>
        </item>
@@ -245,15 +197,14 @@
     <addaction name="actionSave_Rom"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menuOptions">
+   <widget class="QMenu" name="menuExtras">
     <property name="title">
-     <string>Op&amp;tions</string>
+     <string>Ex&amp;tras</string>
     </property>
-    <addaction name="actionSelect_Directory"/>
-    <addaction name="actionSet_compiler_path"/>
+    <addaction name="actionPreferences"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuOptions"/>
+   <addaction name="menuExtras"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="dockError">
@@ -320,6 +271,23 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionSave_File"/>
+   <addaction name="actionRefresh_Offsets"/>
+   <addaction name="actionInsert_Code"/>
+  </widget>
   <action name="actionLoad_Rom">
    <property name="text">
     <string>&amp;Load Rom...</string>
@@ -345,14 +313,24 @@
     <string>&amp;Save Rom...</string>
    </property>
   </action>
-  <action name="actionSelect_Directory">
+  <action name="actionPreferences">
    <property name="text">
-    <string>Select &amp;Directory...</string>
+    <string>Preferences...</string>
    </property>
   </action>
-  <action name="actionSet_compiler_path">
+  <action name="actionSave_File">
    <property name="text">
-    <string>Set Compiler Path...</string>
+    <string>Save File</string>
+   </property>
+  </action>
+  <action name="actionRefresh_Offsets">
+   <property name="text">
+    <string>Refresh Offsets</string>
+   </property>
+  </action>
+  <action name="actionInsert_Code">
+   <property name="text">
+    <string>Insert Code</string>
    </property>
   </action>
  </widget>
@@ -362,6 +340,11 @@
    <class>FileManager</class>
    <extends>QTreeWidget</extends>
    <header>filemanager.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Editor</class>
+   <extends>QTextEdit</extends>
+   <header>editor.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

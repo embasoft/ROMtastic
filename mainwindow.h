@@ -3,7 +3,7 @@
 
 #include "becreative.h"
 #include "errordock.h"
-#include "highlighter.h"
+#include "preferences.h"
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QLabel>
@@ -32,16 +32,14 @@ public:
     QString compilerPath() const;
     void setCompilerPath(const QString &compilerPath);
 
-    QDir directory() const;
-    void setDirectory(const QDir &directory);
+    Preferences *getPreferences() const;
+    void setPreferences(Preferences *value);
 
 private:
     bool _romLoaded = false;
+    Preferences *preferences;
     QString _romPath;
     QString _compilerPath;
-    QDir _directory;
-
-    Highlighter *highlighter;
 
     int compileFile(QString path);
     bool setupSourceBrowser();
@@ -58,17 +56,15 @@ private slots:
 
     void on_actionSave_Rom_triggered();
 
-    void on_btnRefreshOffsets_clicked();
+    void on_fileManager_itemDoubleClicked(QTreeWidgetItem *item, int column);
 
-    void on_actionSelect_Directory_triggered();
+    void on_actionPreferences_triggered();
 
-    void on_btnInsertCode_clicked();
+    void on_actionSave_File_triggered();
 
-    void on_btnSaveFile_clicked();
+    void on_actionRefresh_Offsets_triggered();
 
-    void on_treeSourceFiles_itemDoubleClicked(QTreeWidgetItem *item, int column);
-
-    void on_actionSet_compiler_path_triggered();
+    void on_actionInsert_Code_triggered();
 
 private:
     Ui::MainWindow *ui;

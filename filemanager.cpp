@@ -185,5 +185,10 @@ void FileManager::setCompiler(Compiler *compiler)
     }
 }
 
+void FileManager::setCompilerPath(QString path)
+{
+    setCompiler(new Compiler(path, this));
+}
+
 
 

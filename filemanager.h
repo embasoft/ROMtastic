@@ -24,6 +24,7 @@ public:
 
     Compiler *compiler() const;
     void setCompiler(Compiler *compiler);
+    void setCompilerPath(QString path);
 
     int compileFile(QString Path);
 

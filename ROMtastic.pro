@@ -16,14 +16,19 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     errordock.cpp \
     highlighter.cpp \
-    filemanager.cpp
+    filemanager.cpp \
+    editor.cpp \
+    preferences.cpp
 
 HEADERS  += mainwindow.h \
     errordock.h \
     highlighter.h \
-    filemanager.h
+    filemanager.h \
+    editor.h \
+    preferences.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    preferences.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../build-beCreative-Desktop-Debug/release/ -lbeCreative
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../build-beCreative-Desktop-Debug/debug/ -lbeCreative

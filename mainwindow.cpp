@@ -23,53 +23,37 @@ MainWindow::MainWindow(QWidget *parent) :
         errorDock->addError("error", "Setup of editor failed");
     }
 
-    QFont font = ui->editSource->font();
-    font.setStyleHint(QFont::Monospace);
-    ui->editSource->setFont(font);
+    preferences = new Preferences(ui->fileManager, errorDock, this);
+    preferences->setMainUi(ui);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
-QString MainWindow::compilerPath() const
+Preferences *MainWindow::getPreferences() const
 {
-    return _compilerPath;
+    return preferences;
 }
 
-void MainWindow::setCompilerPath(const QString &compilerPath)
+void MainWindow::setPreferences(Preferences *value)
 {
-    _compilerPath = compilerPath;
-    ui->treeSourceFiles->setCompiler(new Compiler(compilerPath, this));
-    ui->treeSourceFiles->searchFiles();
+    preferences = value;
 }
 
-QDir MainWindow::directory() const
-{
-    return _directory;
-}
-
-void MainWindow::setDirectory(const QDir &directory)
-{
-    _directory = directory;
-    ui->treeSourceFiles->setDirectory(directory);
-
-    if(ui->treeSourceFiles->compilerSet())
-        ui->treeSourceFiles->searchFiles();
-}
 
 bool MainWindow::setupEditor()
 {
-    highlighter = new Highlighter(ui->editSource->document());
+    ui->editSource->setHighlighter(new Highlighter(ui->editSource->document()));
 
     return true;
 }
 
 bool MainWindow::setupSourceBrowser()
 {
-    ui->treeSourceFiles->setDirectory(QDir::homePath());
-    ui->treeSourceFiles->setErrorDock(errorDock);
-    ui->treeSourceFiles->setEditorWidget(ui->editSource);
+    ui->fileManager->setDirectory(QDir::homePath());
+    ui->fileManager->setErrorDock(errorDock);
+    ui->fileManager->setEditorWidget(ui->editSource);
 
     return true;
 }
@@ -146,13 +130,46 @@ void MainWindow::on_actionSave_Rom_triggered()
     }
 }
 
-void MainWindow::on_btnRefreshOffsets_clicked()
+void MainWindow::on_fileManager_itemDoubleClicked(QTreeWidgetItem *item, int column)
+{
+    QString fileName = item->text(0);
+
+    if (!ui->fileManager->loadFile(fileName))
+    {
+        errorDock->addError("error", "Failed to load file: " + fileName);
+        return;
+    }
+
+    ui->boxRom->setTitle("Rom - " + fileName);
+}
+
+void MainWindow::on_actionPreferences_triggered()
+{
+    preferences->show();
+}
+
+void MainWindow::on_actionSave_File_triggered()
+{
+    if (ui->fileManager->fileLoaded())
+    {
+        if (!ui->fileManager->saveFile())
+        {
+            errorDock->addError("error", "Failed to save file: " + ui->fileManager->fileName());
+        }
+    }
+    else
+    {
+        errorDock->addError("hint", "No file loaded");
+    }
+}
+
+void MainWindow::on_actionRefresh_Offsets_triggered()
 {
     if (_romLoaded)
     {
-        if (ui->treeSourceFiles->selectedItems().size())
+        if (ui->fileManager->selectedItems().size())
         {
-            QString minimumRaw = ui->treeSourceFiles->selectedItems()[0]->text(1);
+            QString minimumRaw = ui->fileManager->selectedItems()[0]->text(1);
             int minimum = minimumRaw.left(minimumRaw.lastIndexOf(" ")).toInt();
 
             insertOffsets(minimum);
@@ -168,19 +185,14 @@ void MainWindow::on_btnRefreshOffsets_clicked()
     }
 }
 
-void MainWindow::on_actionSelect_Directory_triggered()
-{
-    setDirectory(QFileDialog::getExistingDirectory(this, "Select a Directory", QDir::homePath()));
-}
-
-void MainWindow::on_btnInsertCode_clicked()
+void MainWindow::on_actionInsert_Code_triggered()
 {
     if (_romLoaded)
     {
         if (ui->listOffsets->count())
         {
-            QString fileName = ui->treeSourceFiles->selectedItems()[0]->text(0);
-            QFile file(directory().absolutePath() + "/" + fileName + ".bin");
+            QString fileName = ui->fileManager->selectedItems()[0]->text(0);
+            QFile file(ui->fileManager->directory().absolutePath() + "/" + fileName + ".bin");
             QByteArray input;
 
             if (!file.open(QIODevice::ReadOnly))
@@ -205,7 +217,7 @@ void MainWindow::on_btnInsertCode_clicked()
 
             errorDock->addError("hint", "Code inserted at: " + ui->listOffsets->itemAt(0, 0)->text());
 
-            QString minimumRaw = ui->treeSourceFiles->selectedItems()[0]->text(1);
+            QString minimumRaw = ui->fileManager->selectedItems()[0]->text(1);
             int minimum = minimumRaw.left(minimumRaw.lastIndexOf(" ")).toInt();
 
             insertOffsets(minimum);
@@ -219,37 +231,4 @@ void MainWindow::on_btnInsertCode_clicked()
     {
         errorDock->addError("hint", "No rom loaded");
     }
-}
-
-void MainWindow::on_btnSaveFile_clicked()
-{
-    if (ui->treeSourceFiles->fileLoaded())
-    {
-        if (!ui->treeSourceFiles->saveFile())
-        {
-            errorDock->addError("error", "Failed to save file: " + ui->treeSourceFiles->fileName());
-        }
-    }
-    else
-    {
-        errorDock->addError("hint", "No file loaded");
-    }
-}
-
-void MainWindow::on_treeSourceFiles_itemDoubleClicked(QTreeWidgetItem *item, int column)
-{
-    QString fileName = item->text(0);
-
-    if (!ui->treeSourceFiles->loadFile(fileName))
-    {
-        errorDock->addError("error", "Failed to load file: " + fileName);
-        return;
-    }
-
-    ui->boxRom->setTitle("Rom - " + fileName);
-}
-
-void MainWindow::on_actionSet_compiler_path_triggered()
-{
-    setCompilerPath(QFileDialog::getExistingDirectory(this, "Select the directory of the compiler", QDir::homePath()));
 }
